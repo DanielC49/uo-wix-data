@@ -8,7 +8,7 @@ This is an unofficial NPM Package which includes some functions from the Wix Dat
 
 # Documentation
 
-```
+```js
 const wixData = require("./index.js");
 wixData.setup("username", "my-site", "foobar");
 
