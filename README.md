@@ -6,8 +6,13 @@ This is an unofficial NPM Package which includes some functions from the Wix Dat
 
 `npm install uo-wix-data --save`
 
+Check documentaiton for more steps.
+
 # Documentation
 
+On your wix site create a backend file called `http-functions.js` and inside it put the code that is in `uowd-http.js`.
+
+**Example:**
 ```js
 const wixData = require("./index.js");
 wixData.setup("username", "my-site", "foobar");
