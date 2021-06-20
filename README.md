@@ -10,7 +10,7 @@ Check documentaiton for more steps.
 
 # Documentation
 
-On your wix site create a backend file called `http-functions.js` and inside it put the code that is in `uowd-http.js`.
+On your wix site create a backend file called `http-functions.js` and inside it put the code that is in (uowd-http.js)[https://github.com/PPTGames/uo-wix-data/blob/main/uowd-http.js].
 
 **Example:**
 ```js
