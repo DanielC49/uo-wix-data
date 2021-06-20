@@ -14,7 +14,7 @@ On your wix site create a backend file called `http-functions.js` and inside it 
 
 **Example:**
 ```js
-const wixData = require("./index.js");
+const wixData = require("uo-wix-data");
 wixData.setup("username", "my-site", "foobar");
 
 // Example
