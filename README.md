@@ -10,9 +10,14 @@ Check documentaiton for more steps.
 
 # Documentation
 
-On your wix site create a backend file called `http-functions.js` and inside it put the code that is in [uowd-http.js](https://github.com/PPTGames/uo-wix-data/blob/main/uowd-http.js).
+## Getting started
 
-**Example:**
+**1.** Create a Wix site (blank template) and enable Developer mode.
+**2.** On your wix site create a backend file called `http-functions.js` (if not created already) and inside it put the code from [uowd-http.js](https://github.com/PPTGames/uo-wix-data/blob/main/uowd-http.js).
+**3.** In `const wdToken = "1234";` replace `1234` with your secret token.
+**4.** On your Node.JS file import uo-wix-data with `const wixData = require("uo-wix-data")` and set up `wixData.setup("username", "my-site", "token")` replacing `username` with your wix username, `my-site` with your site name and `token` with your secret token.
+
+## Example:
 ```js
 const wixData = require("uo-wix-data");
 wixData.setup("username", "my-site", "foobar");
