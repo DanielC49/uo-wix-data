@@ -1,15 +1,7 @@
 import { ok, badRequest } from 'wix-http-functions';
 import wixData from 'wix-data';
 
-// URL to call this HTTP function from your published site looks like: 
-// Premium site - https://mysite.com/_functions/example/multiply?leftOperand=3&rightOperand=4
-// Free site - https://username.wixsite.com/mysite/_functions/example/multiply?leftOperand=3&rightOperand=4
-
-// URL to test this HTTP function from your saved site looks like:
-// Premium site - https://mysite.com/_functions-dev/example/multiply?leftOperand=3&rightOperand=4
-// Free site - https://username.wixsite.com/mysite/_functions-dev/example/multiply?leftOperand=3&rightOperand=4
-
-const wdToken = "1234";
+const wdToken = "foobar";
 
 export function post_wixData(request) {
     const response = {
@@ -21,10 +13,12 @@ export function post_wixData(request) {
     return request.body.text().then((body) => {
         body = JSON.parse(body);
 
+        const UOWD_VERSION = 2;
+
         if (body.token !== wdToken) {
             response.body = {
                 "status": "failed",
-                "error": "token_invalid"
+                "error": "invalid_token"
             }
             return badRequest(response);
         }
@@ -39,7 +33,15 @@ export function post_wixData(request) {
             return badRequest(response);
         }
 
-        if (type == "query.find") {
+        if (!body.version || body.version < UOWD_VERSION) {
+            response.body = {
+                "status": "failed",
+                "error": "invalid_version"
+            }
+            return badRequest(response);
+        }
+
+        if (type.startsWith("query.")) {
             let query = wixData.query(body.collectionId);
             for (let i = 0; i < body.query.length; i++) {
                 switch (body.query[i].type) {
@@ -94,28 +96,48 @@ export function post_wixData(request) {
                 case "limit":
                     query = query.limit(body.query[i].limit);
                     break;
+                case "include":
+                    query = query.include(body.query[i].property);
+                    break;
                 default:
                     response.body = {
                         "status": "failed",
-                        "error": "query_type_invalid"
+                        "error": "invalid_query_type"
                     }
                     return badRequest(response);
                 }
             }
-            return query.find().then((result) => {
-                response.body = {
-                    "status": "success",
-                    "result": result
-                }
-                return ok(response);
-            }).catch((error) => {
-                response.body = {
-                    "status": "failed",
-                    "error": "query_failed",
-                    "errorMessage": error
-                }
-                return badRequest(response);
-            });
+            if (type == "query.find") {
+                return query.find().then((result) => {
+                    response.body = {
+                        "status": "success",
+                        "result": result
+                    }
+                    return ok(response);
+                }).catch((error) => {
+                    response.body = {
+                        "status": "failed",
+                        "error": "find_failed",
+                        "errorMessage": error
+                    }
+                    return badRequest(response);
+                });
+            } else if (type == "query.count") {
+                return query.count().then((result) => {
+                    response.body = {
+                        "status": "success",
+                        "result": result
+                    }
+                    return ok(response);
+                }).catch((error) => {
+                    response.body = {
+                        "status": "failed",
+                        "error": "count_failed",
+                        "errorMessage": error
+                    }
+                    return badRequest(response);
+                });
+            }
         } else if (type == "get") {
             return wixData.get(body.collectionId, body.itemId).then((item) => {
                 response.body = {
@@ -146,6 +168,21 @@ export function post_wixData(request) {
                 }
                 return badRequest(response);
             });
+        } else if (type == "bulk_insert") {
+            return wixData.bulkInsert(body.collectionId, body.items).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "insert_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
         } else if (type == "update") {
             return wixData.update(body.collectionId, body.item).then((item) => {
                 response.body = {
@@ -157,6 +194,21 @@ export function post_wixData(request) {
                 response.body = {
                     "status": "failed",
                     "error": "update_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "bulk_update") {
+            return wixData.bulkUpdate(body.collectionId, body.items).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "bulk_update_failed",
                     "errorMessage": error
                 }
                 return badRequest(response);
@@ -176,10 +228,25 @@ export function post_wixData(request) {
                 }
                 return badRequest(response);
             });
+        } else if (type == "bulk_remove") {
+            return wixData.bulkRemove(body.collectionId, body.itemIds).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "bulk_remove_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
         } else {
             response.body = {
                 "status": "failed",
-                "error": "type_invalid"
+                "error": "invalid_type"
             }
             return badRequest(response);
         }
