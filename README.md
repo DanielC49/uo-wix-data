@@ -10,6 +10,8 @@ Check documentaiton for more steps.
 
 # Documentation
 
+On your wix site create a backend file called `http-functions.js` and inside it put the code that is in [uowd-http.js](https://github.com/PPTGames/uo-wix-data/blob/main/uowd-http.js).
+
 ## Getting started
 
 **1.** Create a Wix site (blank template) and enable Developer mode.
@@ -20,7 +22,13 @@ Check documentaiton for more steps.
 
 **4.** On your Node.JS file import uo-wix-data with `const wixData = require("uo-wix-data")` and set up `wixData.setup("username", "my-site", "token")` replacing `username` with your wix username, `my-site` with your site name and `token` with your secret token.
 
-## Example:
+## UO Wix Data functions
+
+- `setup(username, siteName, token)` - Sets everything up.
+- `enableDevMode(void)` - Sends requests to published site.
+- `disableDevMode(void)` - Sends requests to saved site.
+
+**Example:**
 ```js
 const wixData = require("uo-wix-data");
 wixData.setup("username", "my-site", "foobar");
@@ -30,3 +38,18 @@ wixData.query("Users").eq("name", "John").find().then((result) => {
     console.log(result.items[0]);
 });
 ```
+
+# Version 2.0.0
+- Added new functions:
+  - bulkInsert
+  - bulkUpdate
+  - bulkRemove
+  - query.include
+  - query.count
+  - enableDevMode
+  - disableDevMode
+- Changed some error messages:
+  - `type_invalid` to `invalid_type`
+  - `token_invalid` to `invalid_token`
+  - `query_type_invalid` to `invalid_query_type`
+  - `query_failed` to `find_failed`
