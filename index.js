@@ -8,7 +8,8 @@ let data;
 
 function setup(username, siteName, token) {
     data = {
-        username, siteName
+        username,
+        siteName
     };
     baseUrl = "https://" + username + ".wixsite.com/" + siteName + "/_functions/";
     wdToken = token;
