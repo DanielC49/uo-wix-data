@@ -1,6 +1,6 @@
 {
   "name": "uo-wix-data",
-  "version": "1.0.0",
+  "version": "2.0.10",
   "description": "Unofficial Wix Data API. Uses HTTP requests to connect.",
   "main": "index.js",
   "scripts": {

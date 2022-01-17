@@ -1,3 +1,8 @@
+/*
+  uo-wix-data
+  PPTGames
+*/
+
 import { ok, badRequest } from 'wix-http-functions';
 import wixData from 'wix-data';
 

@@ -22,11 +22,21 @@ On your wix site create a backend file called `http-functions.js` and inside it 
 
 **4.** On your Node.JS file import uo-wix-data with `const wixData = require("uo-wix-data")` and set up `wixData.setup("username", "my-site", "token")` replacing `username` with your wix username, `my-site` with your site name and `token` with your secret token.
 
-## UO Wix Data functions
+## Functions
 
-- `setup(username, siteName, token)` - Sets everything up.
+- `setup(username, siteName, token)` - Sets everything up and returns the WixData object.
 - `enableDevMode(void)` - Sends requests to published site.
 - `disableDevMode(void)` - Sends requests to saved site.
+
+## WixData object
+- `get`
+- `query`
+- `insert`
+- `bulkInsert`
+- `update`
+- `bulkUpdate`
+- `remove`
+- `bulkRemove`
 
 **Example:**
 ```js
