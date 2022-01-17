@@ -18,7 +18,7 @@ export function post_wixData(request) {
     return request.body.text().then((body) => {
         body = JSON.parse(body);
 
-        const UOWD_VERSION = 2;
+        const UOWD_VERSION = 3;
 
         if (body.token !== wdToken) {
             response.body = {

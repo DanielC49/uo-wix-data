@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const version = 2;
+const version = 3;
 
 let baseUrl;
 let wdToken;
