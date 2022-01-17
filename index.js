@@ -258,10 +258,14 @@ function executeFunc(func, params) {
             "version": version,
             "type": func,
             "params": params
-        }).then(function (res) {
+        }).then((res) => {
             resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
+        }).catch((err) => {
+            if (err.response.status == 404) {
+                reject("ERROR: Could not connect.\nCheck if the username and site name are correct, and if you have the http-functions.js file on the site.");
+            } else {
+                reject(err.response.data);
+            }
         });
     });
 }
