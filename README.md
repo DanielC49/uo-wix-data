@@ -31,23 +31,42 @@ On your wix site create a backend file called `http-functions.js` and inside it 
 ## WixData object
 - `get`
 - `query`
+  - `eq`, `ne`, `gt`, `ge`, `lt`, `lt`, `le`, `between`, `contains`, `starsWith`, `endsWith`, `hasAll`, `hasSome`, `isEmpty`, `isNotEmpty`, `ascending`, `descending`, `limit`, `include`, `find`, `count`
+- `get`
+- `query`
 - `insert`
 - `bulkInsert`
+- `insertReference`
+- `isReferenced`
+- `queryReferenced`
 - `update`
 - `bulkUpdate`
+- `save`
 - `remove`
 - `bulkRemove`
+- `removeReference`
+- `replaceReferences`
 
 **Example:**
 ```js
-const wixData = require("uo-wix-data");
-wixData.setup("username", "my-site", "foobar");
+const wixData = require("uo-wix-data")
+  .setup("username", "my-site", "foobar");
 
 // Example
 wixData.query("Users").eq("name", "John").find().then((result) => {
     console.log(result.items[0]);
 });
 ```
+
+# Version 3.0.0
+- Changed setup function to return WixData object
+- Added new functions:
+  - `insertReference`
+  - `isReferenced`
+  - `queryReferenced`
+  - `save`
+  - `removeReference`
+  - `replaceReferences`
 
 # Version 2.0.0
 - Added new functions:

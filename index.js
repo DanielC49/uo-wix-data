@@ -17,10 +17,16 @@ function setup(username, siteName, token) {
         query,
         insert,
         bulkInsert,
+        insertReference,
+        isReferenced,
+        queryReferenced,
         update,
         bulkUpdate,
+        save,
         remove,
-        bulkRemove
+        bulkRemove,
+        removeReference,
+        replaceReferences
     };
 }
 
@@ -112,33 +118,15 @@ class WixDataQuery {
         return this;
     }
     find() {
-        return new Promise((resolve, reject) => {
-            axios.post(baseUrl + "/wixData", {
-                "token": wdToken,
-                "version": version,
-                "type": "query.find",
-                "collectionId": this.#collectionId,
-                "query": this.#query
-            }).then(function (res) {
-                resolve(res.data.result);
-            }).catch(function (err) {
-                reject(err.response.data);
-            });
+        return executeFunc("query.find", {
+            "collectionId": this.#collectionId,
+            "query": this.#query
         });
     }
     count() {
-        return new Promise((resolve, reject) => {
-            axios.post(baseUrl + "/wixData", {
-                "token": wdToken,
-                "version": version,
-                "type": "query.count",
-                "collectionId": this.#collectionId,
-                "query": this.#query
-            }).then(function (res) {
-                resolve(res.data.result);
-            }).catch(function (err) {
-                reject(err.response.data);
-            });
+        return executeFunc("query.count", {
+            "collectionId": this.#collectionId,
+            "query": this.#query
         });
     }
 }
@@ -148,110 +136,127 @@ function query(collectionId) {
     return query;
 }
 
-function get(collectionId, itemId) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "get",
-            "collectionId": collectionId,
-            "itemId": itemId
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function get(collectionId, itemId, options) {
+    return executeFunc("get", {
+        collectionId,
+        itemId,
+        options
     });
 }
 
-function insert(collectionId, item) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "insert",
-            "collectionId": collectionId,
-            "item": item
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function insert(collectionId, item, options) {
+    return executeFunc("insert", {
+        collectionId,
+        item,
+        options
     });
 }
 
-function bulkInsert(collectionId, items) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "bulk_insert",
-            "collectionId": collectionId,
-            "items": items
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function bulkInsert(collectionId, items, options) {
+    return executeFunc("bulk_insert", {
+        collectionId,
+        items,
+        options
     });
 }
 
-function update(collectionId, item) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "update",
-            "collectionId": collectionId,
-            "item": item
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function insertReference(collectionId, propertyName, referringItem, referencedItem, options) {
+    return executeFunc("insert_reference", {
+        collectionId,
+        propertyName,
+        referringItem,
+        referencedItem,
+        options
     });
 }
 
-function bulkUpdate(collectionId, items) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "bulk_update",
-            "collectionId": collectionId,
-            "items": items
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function isReferenced(collectionId, propertyName, referringItem, referencedItem, options) {
+    return executeFunc("is_reference", {
+        collectionId,
+        propertyName,
+        referringItem,
+        referencedItem,
+        options
     });
 }
 
-function remove(collectionId, itemId) {
-    return new Promise((resolve, reject) => {
-        axios.post(baseUrl + "/wixData", {
-            "token": wdToken,
-            "version": version,
-            "type": "remove",
-            "collectionId": collectionId,
-            "itemId": itemId
-        }).then(function (res) {
-            resolve(res.data.result);
-        }).catch(function (err) {
-            reject(err.response.data);
-        });
+function queryReferenced(collectionId, item, propertyName, options) {
+    return executeFunc("query_reference", {
+        collectionId,
+        item,
+        propertyName,
+        options,
+        options
     });
 }
 
-function bulkRemove(collectionId, itemIds) {
+function update(collectionId, item, options) {
+    return executeFunc("update", {
+        collectionId,
+        item,
+        options
+    });
+}
+
+function bulkUpdate(collectionId, items, options) {
+    return executeFunc("bulk_update", {
+        collectionId,
+        items,
+        options
+    });
+}
+
+function save(collectionId, item, options) {
+    return executeFunc("save", {
+        collectionId,
+        item,
+        options
+    });
+}
+
+function remove(collectionId, itemId, options) {
+    return executeFunc("remove", {
+        collectionId,
+        itemId,
+        options
+    });
+}
+
+function bulkRemove(collectionId, itemIds, options) {
+    return executeFunc("bulk_remove", {
+        collectionId,
+        itemIds,
+        options
+    });
+}
+
+function removeReference(collectionId, propertyName, referringItem, referencedItem, options) {
+    return executeFunc("remove_reference", {
+        collectionId,
+        propertyName,
+        referringItem,
+        referencedItem,
+        options
+    });
+}
+
+function replaceReferences(collectionId, propertyName, referringItem, referencedItem, options) {
+    return executeFunc("replace_references", {
+        collectionId,
+        propertyName,
+        referringItem,
+        referencedItem,
+        options
+    });
+}
+
+function executeFunc(func, params) {
     return new Promise((resolve, reject) => {
         axios.post(baseUrl + "/wixData", {
             "token": wdToken,
             "version": version,
-            "type": "bulk_remove",
-            "collectionId": collectionId,
-            "itemIds": itemIds
+            "type": func,
+            "params": params
         }).then(function (res) {
             resolve(res.data.result);
         }).catch(function (err) {

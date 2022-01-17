@@ -46,63 +46,65 @@ export function post_wixData(request) {
             return badRequest(response);
         }
 
+        const params = body.params;
+
         if (type.startsWith("query.")) {
-            let query = wixData.query(body.collectionId);
-            for (let i = 0; i < body.query.length; i++) {
-                switch (body.query[i].type) {
+            let query = wixData.query(params.collectionId);
+            for (let i = 0; i < params.length; i++) {
+                switch (params[i].type) {
                 case "eq":
-                    query = query.eq(body.query[i].property, body.query[i].value);
+                    query = query.eq(params[i].property, params[i].value);
                     break;
                 case "ne":
-                    query = query.ne(body.query[i].property, body.query[i].value);
+                    query = query.ne(params[i].property, params[i].value);
                     break;
                 case "gt":
-                    query = query.gt(body.query[i].property, body.query[i].value);
+                    query = query.gt(params[i].property, params[i].value);
                     break;
                 case "ge":
-                    query = query.ge(body.query[i].property, body.query[i].value);
+                    query = query.ge(params[i].property, params[i].value);
                     break;
                 case "lt":
-                    query = query.lt(body.query[i].property, body.query[i].value);
+                    query = query.lt(params[i].property, params[i].value);
                     break;
                 case "le":
-                    query = query.le(body.query[i].property, body.query[i].value);
+                    query = query.le(params[i].property, params[i].value);
                     break;
                 case "between":
-                    query = query.between(body.query[i].property, body.query[i].start, body.query[i].end);
+                    query = query.between(params[i].property, params[i].start, params[i].end);
                     break;
                 case "contains":
-                    query = query.eq(body.query[i].property, body.query[i].string);
+                    query = query.eq(params[i].property, params[i].string);
                     break;
                 case "startsWith":
-                    query = query.startsWith(body.query[i].property, body.query[i].string);
+                    query = query.startsWith(params[i].property, params[i].string);
                     break;
                 case "endsWith":
-                    query = query.endsWith(body.query[i].property, body.query[i].string);
+                    query = query.endsWith(params[i].property, params[i].string);
                     break;
                 case "hasAll":
-                    query = query.hasAll(body.query[i].property, body.query[i].value);
+                    query = query.hasAll(params[i].property, params[i].value);
                     break;
                 case "hasSome":
-                    query = query.hasSome(body.query[i].property, body.query[i].value);
+                    query = query.hasSome(params[i].property, params[i].value);
                     break;
                 case "isEmpty":
-                    query = query.isEmpty(body.query[i].property);
+                    query = query.isEmpty(params[i].property);
                     break;
                 case "isNotEmpty":
-                    query = query.isNotEmpty(body.query[i].property);
+                    query = query.isNotEmpty(params[i].property);
                     break;
                 case "ascending":
-                    query = query.ascending(body.query[i].property);
+                    query = query.ascending(params[i].property);
                     break;
                 case "descending":
-                    query = query.descending(body.query[i].property);
+                    query = query.descending(params[i].property);
                     break;
                 case "limit":
-                    query = query.limit(body.query[i].limit);
+                    query = query.limit(params[i].limit);
                     break;
                 case "include":
-                    query = query.include(body.query[i].property);
+                    query = query.include(params[i].property);
                     break;
                 default:
                     response.body = {
@@ -113,10 +115,10 @@ export function post_wixData(request) {
                 }
             }
             if (type == "query.find") {
-                return query.find().then((result) => {
+                return query.find(params.options).then((res) => {
                     response.body = {
                         "status": "success",
-                        "result": result
+                        "result": res
                     }
                     return ok(response);
                 }).catch((error) => {
@@ -128,10 +130,10 @@ export function post_wixData(request) {
                     return badRequest(response);
                 });
             } else if (type == "query.count") {
-                return query.count().then((result) => {
+                return query.count(params.options).then((res) => {
                     response.body = {
                         "status": "success",
-                        "result": result
+                        "result": res
                     }
                     return ok(response);
                 }).catch((error) => {
@@ -144,10 +146,10 @@ export function post_wixData(request) {
                 });
             }
         } else if (type == "get") {
-            return wixData.get(body.collectionId, body.itemId).then((item) => {
+            return wixData.get(params.collectionId, params.itemId, params.options).then((res) => {
                 response.body = {
                     "status": "success",
-                    "result": item
+                    "result": res
                 }
                 return ok(response);
             }).catch((error) => {
@@ -159,10 +161,10 @@ export function post_wixData(request) {
                 return badRequest(response);
             });
         } else if (type == "insert") {
-            return wixData.insert(body.collectionId, body.item).then((item) => {
+            return wixData.insert(params.collectionId, params.item, params.options).then((res) => {
                 response.body = {
                     "status": "success",
-                    "result": item
+                    "result": res
                 }
                 return ok(response);
             }).catch((error) => {
@@ -174,7 +176,52 @@ export function post_wixData(request) {
                 return badRequest(response);
             });
         } else if (type == "bulk_insert") {
-            return wixData.bulkInsert(body.collectionId, body.items).then((res) => {
+            return wixData.bulkInsert(params.collectionId, params.items, params.options).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "insert_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "insert_reference") {
+            return wixData.insertReference(params.collectionId, params.propertyName, params.referringItem, params.referencedItem, params.options).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "insert_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "is_referenced") {
+            return wixData.isReferenced(params.collectionId, params.propertyName, params.referringItem, params.referencedItem, params.options).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "insert_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "query_referenced") {
+            return wixData.queryReferenced(params.collectionId, params.item, params.propertyName, params.options).then((res) => {
                 response.body = {
                     "status": "success",
                     "result": res
@@ -189,10 +236,10 @@ export function post_wixData(request) {
                 return badRequest(response);
             });
         } else if (type == "update") {
-            return wixData.update(body.collectionId, body.item).then((item) => {
+            return wixData.update(params.collectionId, params.item, params.options).then((res) => {
                 response.body = {
                     "status": "success",
-                    "result": item
+                    "result": res
                 }
                 return ok(response);
             }).catch((error) => {
@@ -204,7 +251,7 @@ export function post_wixData(request) {
                 return badRequest(response);
             });
         } else if (type == "bulk_update") {
-            return wixData.bulkUpdate(body.collectionId, body.items).then((res) => {
+            return wixData.bulkUpdate(params.collectionId, params.items).then((res) => {
                 response.body = {
                     "status": "success",
                     "result": res
@@ -218,11 +265,26 @@ export function post_wixData(request) {
                 }
                 return badRequest(response);
             });
-        } else if (type == "remove") {
-            return wixData.remove(body.collectionId, body.itemId).then((item) => {
+        } else if (type == "save") {
+            return wixData.save(params.collectionId, params.item, params.options).then((res) => {
                 response.body = {
                     "status": "success",
-                    "result": item
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "update_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "remove") {
+            return wixData.remove(params.collectionId, params.itemId).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
                 }
                 return ok(response);
             }).catch((error) => {
@@ -234,7 +296,7 @@ export function post_wixData(request) {
                 return badRequest(response);
             });
         } else if (type == "bulk_remove") {
-            return wixData.bulkRemove(body.collectionId, body.itemIds).then((res) => {
+            return wixData.bulkRemove(params.collectionId, params.itemIds).then((res) => {
                 response.body = {
                     "status": "success",
                     "result": res
@@ -244,6 +306,36 @@ export function post_wixData(request) {
                 response.body = {
                     "status": "failed",
                     "error": "bulk_remove_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "remove_reference") {
+            return wixData.removeReference(params.collectionId, params.propertyName, params.referringItem, params.referencedItem, params.options).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "remove_failed",
+                    "errorMessage": error
+                }
+                return badRequest(response);
+            });
+        } else if (type == "replace_references") {
+            return wixData.replaceReferences(params.collectionId, params.propertyName, params.referringItem, params.referencedItem, params.options).then((res) => {
+                response.body = {
+                    "status": "success",
+                    "result": res
+                }
+                return ok(response);
+            }).catch((error) => {
+                response.body = {
+                    "status": "failed",
+                    "error": "remove_failed",
                     "errorMessage": error
                 }
                 return badRequest(response);
