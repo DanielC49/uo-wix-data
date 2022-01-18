@@ -18,7 +18,7 @@ export function post_wixData(request) {
     return request.body.text().then((body) => {
         body = JSON.parse(body);
 
-        const UOWD_VERSION = 3;
+        const UOWD_VERSION = 2;
 
         if (body.token !== wdToken) {
             response.body = {
@@ -50,61 +50,61 @@ export function post_wixData(request) {
 
         if (type.startsWith("query.")) {
             let query = wixData.query(params.collectionId);
-            for (let i = 0; i < params.length; i++) {
-                switch (params[i].type) {
+            for (let i = 0; i < params.query.length; i++) {
+                switch (params.query[i].type) {
                 case "eq":
-                    query = query.eq(params[i].property, params[i].value);
+                    query = query.eq(params.query[i].property, params.query[i].value);
                     break;
                 case "ne":
-                    query = query.ne(params[i].property, params[i].value);
+                    query = query.ne(params.query[i].property, params.query[i].value);
                     break;
                 case "gt":
-                    query = query.gt(params[i].property, params[i].value);
+                    query = query.gt(params.query[i].property, params.query[i].value);
                     break;
                 case "ge":
-                    query = query.ge(params[i].property, params[i].value);
+                    query = query.ge(params.query[i].property, params.query[i].value);
                     break;
                 case "lt":
-                    query = query.lt(params[i].property, params[i].value);
+                    query = query.lt(params.query[i].property, params.query[i].value);
                     break;
                 case "le":
-                    query = query.le(params[i].property, params[i].value);
+                    query = query.le(params.query[i].property, params.query[i].value);
                     break;
                 case "between":
-                    query = query.between(params[i].property, params[i].start, params[i].end);
+                    query = query.between(params.query[i].property, params.query[i].start, params.query[i].end);
                     break;
                 case "contains":
-                    query = query.eq(params[i].property, params[i].string);
+                    query = query.eq(params.query[i].property, params.query[i].string);
                     break;
                 case "startsWith":
-                    query = query.startsWith(params[i].property, params[i].string);
+                    query = query.startsWith(params.query[i].property, params.query[i].string);
                     break;
                 case "endsWith":
-                    query = query.endsWith(params[i].property, params[i].string);
+                    query = query.endsWith(params.query[i].property, params.query[i].string);
                     break;
                 case "hasAll":
-                    query = query.hasAll(params[i].property, params[i].value);
+                    query = query.hasAll(params.query[i].property, params.query[i].value);
                     break;
                 case "hasSome":
-                    query = query.hasSome(params[i].property, params[i].value);
+                    query = query.hasSome(params.query[i].property, params.query[i].value);
                     break;
                 case "isEmpty":
-                    query = query.isEmpty(params[i].property);
+                    query = query.isEmpty(params.query[i].property);
                     break;
                 case "isNotEmpty":
-                    query = query.isNotEmpty(params[i].property);
+                    query = query.isNotEmpty(params.query[i].property);
                     break;
                 case "ascending":
-                    query = query.ascending(params[i].property);
+                    query = query.ascending(params.query[i].property);
                     break;
                 case "descending":
-                    query = query.descending(params[i].property);
+                    query = query.descending(params.query[i].property);
                     break;
                 case "limit":
-                    query = query.limit(params[i].limit);
+                    query = query.limit(params.query[i].limit);
                     break;
                 case "include":
-                    query = query.include(params[i].property);
+                    query = query.include(params.query[i].property);
                     break;
                 default:
                     response.body = {
