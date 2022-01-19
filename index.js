@@ -114,7 +114,7 @@ class WixDataQuery {
         this.#query.push({ "type": "limit", "limit": limit });
         return this;
     }
-    include(propertyName) {
+    include(...propertyName) {
         this.#query.push({ "type": "include", "property": propertyName });
         return this;
     }
