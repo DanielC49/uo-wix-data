@@ -103,11 +103,11 @@ class WixDataQuery {
         return this;
     }
     ascending(propertyName) {
-        this.#query.push({ "type": "asc", "property": propertyName });
+        this.#query.push({ "type": "ascending", "property": propertyName });
         return this;
     }
     descending(propertyName) {
-        this.#query.push({ "type": "desc", "property": propertyName });
+        this.#query.push({ "type": "descending", "property": propertyName });
         return this;
     }
     limit(limit) {
