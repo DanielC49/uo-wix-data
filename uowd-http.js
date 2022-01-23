@@ -104,7 +104,7 @@ export function post_wixData(request) {
                     query = query.limit(params.query[i].limit);
                     break;
                 case "include":
-                    query = query.include(params.query[i].property);
+                    query = query.include.apply(params.query[i].property);
                     break;
                 default:
                     response.body = {
