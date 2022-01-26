@@ -182,7 +182,7 @@ function isReferenced(collectionId, propertyName, referringItem, referencedItem,
 }
 
 function queryReferenced(collectionId, item, propertyName, options) {
-    return executeFunc("query_reference", {
+    return executeFunc("query_referenced", {
         collectionId,
         item,
         propertyName,
