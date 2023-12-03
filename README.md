@@ -1,5 +1,5 @@
 > [!WARNING]
-> # ⚠️ This project has been discontinued and is no longer maintained or updated.
+> ## This project has been discontinued and is no longer maintained or updated.
 
 ---
 
